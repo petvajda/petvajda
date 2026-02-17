@@ -434,13 +434,68 @@
 
     .js-loaded .reveal.visible { opacity: 1; transform: none; }
 
+    /* ─── MOBILE MENU ─── */
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      line-height: 1;
+    }
+
+    /* ─── RESPONSIVE ─── */
     @media (max-width: 768px) {
       nav { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
+      
+      .mobile-menu-toggle { display: block; }
+      
+      .nav-links {
+        position: fixed;
+        top: 65px;
+        left: 0;
+        right: 0;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 0;
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        z-index: 1000;
+      }
+
+      .nav-links.open {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .nav-links li {
+        border-bottom: 1px solid var(--border);
+      }
+
+      .nav-links li:last-child {
+        border-bottom: none;
+      }
+
+      .nav-links a {
+        display: block;
+        padding: 1rem 1.5rem;
+        font-size: 0.8rem;
+      }
+
       .container { padding: 0 1.5rem; }
       section { padding: 4rem 0; }
+      #hero { min-height: 90vh; padding: 6rem 0 3rem; }
+      .hero-blob { display: none; }
       .pillars { grid-template-columns: 1fr; }
       .pillar { border-right: none; border-bottom: 1px solid var(--border); }
+      .pillar:last-child { border-bottom: none; }
       .apps-grid { grid-template-columns: 1fr; }
       .app-card.wide { grid-template-columns: 1fr; }
       .exp-item { grid-template-columns: 1fr; gap: 0.4rem; }
@@ -452,6 +507,7 @@
 
   <nav>
     <a href="https://petvajda.github.io/" class="nav-logo" style="text-decoration:none;">PV</a>
+    <button class="mobile-menu-toggle" aria-label="Menu">☰</button>
     <ul class="nav-links">
       <li><a href="/#about">About</a></li>
       <li><a href="/#apps">Apps</a></li>
@@ -687,6 +743,24 @@
   <script>
     // Add js-loaded so reveal animation only runs when JS works
     document.body.classList.add('js-loaded');
+
+    // Mobile menu toggle
+    var menuToggle = document.querySelector('.mobile-menu-toggle');
+    var navLinks = document.querySelector('.nav-links');
+    
+    if (menuToggle) {
+      menuToggle.addEventListener('click', function() {
+        navLinks.classList.toggle('open');
+      });
+
+      // Close menu when clicking a link
+      var links = navLinks.querySelectorAll('a');
+      links.forEach(function(link) {
+        link.addEventListener('click', function() {
+          navLinks.classList.remove('open');
+        });
+      });
+    }
 
     var revealEls = document.querySelectorAll('.reveal');
 
