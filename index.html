@@ -1,1 +1,807 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Péter Vajda — PM · Builder · Bassist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0c0e;
+      --surface: #131316;
+      --border: #222228;
+      --accent: #e8ff5a;
+      --accent2: #ff6b4a;
+      --muted: #55555e;
+      --text: #dddde8;
+      --text-dim: #7c7c8a;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'Outfit', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.6;
+    }
+
+    /* ─── GRID LINE BG ─── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 80px 80px;
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: rgba(12,12,14,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ─── LAYOUT ─── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    section { padding: 6rem 0; }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 0 4rem;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s ease forwards;
+    }
+
+    .hero-name {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      line-height: 1.0;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.35s ease forwards;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      line-height: 1.0;
+      font-weight: 400;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.5s ease forwards;
+    }
+
+    .hero-desc {
+      max-width: 520px;
+      font-size: 1.05rem;
+      color: var(--text-dim);
+      line-height: 1.8;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.65s ease forwards;
+    }
+
+    .hero-desc strong { color: var(--text); font-weight: 600; }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.8s ease forwards;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.85rem 1.8rem;
+      border: 1px solid;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border-color: var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* floating accent blob */
+    .hero-blob {
+      position: absolute;
+      right: -10%;
+      top: 20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(ellipse, rgba(232,255,90,0.07) 0%, transparent 70%);
+      pointer-events: none;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.4;
+    }
+
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 3.5rem;
+      color: var(--text);
+    }
+
+    /* ─── ABOUT / PILLARS ─── */
+    #about { border-top: 1px solid var(--border); }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+
+    .pillar {
+      padding: 2.5rem 2rem;
+      border-right: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+
+    .pillar:last-child { border-right: none; }
+
+    .pillar:hover { background: var(--surface); }
+
+    .pillar-icon {
+      font-size: 1.5rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+
+    .pillar-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--text);
+      margin-bottom: 0.8rem;
+    }
+
+    .pillar-body {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.75;
+    }
+
+    .tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(232,255,90,0.3);
+      padding: 0.2rem 0.5rem;
+      margin: 0.2rem 0.1rem;
+    }
+
+    /* ─── APPS ─── */
+    #apps { border-top: 1px solid var(--border); }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .app-card {
+      background: var(--bg);
+      padding: 2.5rem;
+      text-decoration: none;
+      display: block;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .app-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 0;
+      background: var(--accent);
+      transition: height 0.35s ease;
+    }
+
+    .app-card:hover { background: var(--surface); }
+    .app-card:hover::before { height: 100%; }
+
+    .app-number {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .app-name {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      color: var(--text);
+      margin-bottom: 0.8rem;
+      transition: color 0.2s;
+    }
+
+    .app-card:hover .app-name { color: var(--accent); }
+
+    .app-desc {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .app-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .app-link-arrow {
+      position: absolute;
+      bottom: 2.5rem;
+      right: 2.5rem;
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      color: var(--muted);
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .app-card:hover .app-link-arrow {
+      color: var(--accent);
+      transform: translate(4px, -4px);
+    }
+
+    /* third card spans full width */
+    .app-card.wide {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .app-card.wide .app-link-arrow {
+      position: static;
+      margin-top: auto;
+      align-self: end;
+    }
+
+    /* ─── EXPERIENCE ─── */
+    #experience { border-top: 1px solid var(--border); }
+
+    .exp-list { display: flex; flex-direction: column; gap: 0; }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .exp-item:first-child { border-top: 1px solid var(--border); }
+
+    .exp-period {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      padding-top: 0.25rem;
+    }
+
+    .exp-role {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+    }
+
+    .exp-company {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 0.6rem;
+    }
+
+    .exp-detail {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .contact-big {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 2rem;
+      color: var(--text);
+    }
+
+    .contact-big em { font-style: italic; color: var(--accent); }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 2.5rem;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    footer span {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1) translate(0,0); }
+      50%       { transform: scale(1.1) translate(-20px, 20px); }
+    }
+
+    /* scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .container { padding: 0 1.5rem; }
+      section { padding: 4rem 0; }
+      .pillars { grid-template-columns: 1fr; }
+      .pillar { border-right: none; border-bottom: 1px solid var(--border); }
+      .apps-grid { grid-template-columns: 1fr; }
+      .app-card.wide { grid-template-columns: 1fr; }
+      .exp-item { grid-template-columns: 1fr; gap: 0.4rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="nav-logo">PV / 2025</span>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#apps">Apps</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-blob"></div>
+      <p class="hero-eyebrow">Product Manager · Builder · Bassist</p>
+      <h1 class="hero-name"><em>Péter</em> Vajda</h1>
+      <h2 class="hero-title">builds platforms.</h2>
+      <p class="hero-desc">
+        Passionate about <strong>AI, developer platforms</strong>, and vibe coding.
+        From messaging infrastructure at Tesco to low-code APIs and ETL pipelines —
+        I bridge strategy with shipping. When not in PRDs, I'm building
+        <strong>web audio apps</strong> or laying down bass lines.
+      </p>
+      <div class="hero-cta">
+        <a href="#apps" class="btn btn-primary">See my apps →</a>
+        <a href="#contact" class="btn btn-ghost">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <p class="section-label reveal">About</p>
+      <h2 class="section-heading reveal">Three things<br>I care about deeply.</h2>
+      <div class="pillars">
+        <div class="pillar reveal">
+          <span class="pillar-icon">⚙️</span>
+          <h3 class="pillar-title">Platform thinking</h3>
+          <p class="pillar-body">
+            Turning internal services into empowering platforms. At Tesco I grew a 
+            messaging developer platform by <strong style="color:var(--text)">40%</strong> and cut journey lead time
+            from weeks to under an hour. Platform mode over service mode, always.
+          </p>
+          <div style="margin-top:1.2rem;">
+            <span class="tag">REST APIs</span>
+            <span class="tag">Developer UX</span>
+            <span class="tag">OKRs</span>
+            <span class="tag">B2B SaaS</span>
+          </div>
+        </div>
+        <div class="pillar reveal" style="transition-delay:0.1s">
+          <span class="pillar-icon">🤖</span>
+          <h3 class="pillar-title">AI &amp; vibe coding</h3>
+          <p class="pillar-body">
+            I believe the best PMs understand how things are built.
+            I vibe-code web apps with <strong style="color:var(--text)">Tone.js, ABCJS, and Web Audio</strong>,
+            using AI as a creative co-pilot. The gap between idea and shipped product 
+            is shrinking — I'm here for it.
+          </p>
+          <div style="margin-top:1.2rem;">
+            <span class="tag">JavaScript</span>
+            <span class="tag">Python</span>
+            <span class="tag">Ruby</span>
+            <span class="tag">PWA</span>
+          </div>
+        </div>
+        <div class="pillar reveal" style="transition-delay:0.2s">
+          <span class="pillar-icon">🎸</span>
+          <h3 class="pillar-title">Music &amp; rhythm</h3>
+          <p class="pillar-body">
+            Professional bassist with 25+ years. Teaching, performing with live bands, 
+            and building music education tech. Rhythm is a design principle —
+            timing, feel, and groove apply everywhere.
+          </p>
+          <div style="margin-top:1.2rem;">
+            <span class="tag">Bass Guitar</span>
+            <span class="tag">Music Ed</span>
+            <span class="tag">Ely, UK</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPS -->
+  <section id="apps">
+    <div class="container">
+      <p class="section-label reveal">Apps &amp; Side Projects</p>
+      <h2 class="section-heading reveal">Built with AI.<br><em>Shipped by hand.</em></h2>
+
+      <div class="apps-grid reveal">
+        <!-- Rhythm Practice -->
+        <a class="app-card" href="https://petvajda.github.io/rhythm-practice/" target="_blank" rel="noopener">
+          <p class="app-number">01 — Rhythm Practice App</p>
+          <h3 class="app-name">Rhythm Practice</h3>
+          <p class="app-desc">
+            Improve your grooves and solos with rhythmic ideas. 
+            Generates exercises including quarter note triplets and 
+            odd groupings with real-time ABC notation rendering.
+            Why not get better at reading at the same time?
+          </p>
+          <div class="app-stack">
+            <span class="tag">Tone.js</span>
+            <span class="tag">ABCJS</span>
+            <span class="tag">Web Audio</span>
+            <span class="tag">PWA</span>
+          </div>
+          <span class="app-link-arrow">↗</span>
+        </a>
+
+        <!-- Arpeggio Generator -->
+        <a class="app-card" href="https://petvajda.github.io/rhythm-practice/arpeggio/" target="_blank" rel="noopener">
+          <p class="app-number">02 — Music Education</p>
+          <h3 class="app-name">Arpeggio Generator</h3>
+          <p class="app-desc">
+            What better way to learn all keys and your fingerboard?
+            Generates arpeggio exercises across every key and scale, 
+            rendered with interactive notation for bass and guitar players.
+          </p>
+          <div class="app-stack">
+            <span class="tag">ABCJS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">Music Theory</span>
+          </div>
+          <span class="app-link-arrow">↗</span>
+        </a>
+
+        <!-- Grid Beats - full width -->
+        <a class="app-card wide" href="https://petvajda.github.io/rhythm-practice/drum-machine/" target="_blank" rel="noopener">
+          <div>
+            <p class="app-number">03 — Featured Project</p>
+            <h3 class="app-name">Grid Beats</h3>
+            <p class="app-desc">
+              A cyberpunk-themed drum machine PWA with a twist: a full rhythm section.
+              Simple to pick up, deep enough to get lost in.
+              Built to explore the intersection of music, UI design, and web audio APIs.
+            </p>
+          </div>
+          <div>
+            <div class="app-stack" style="margin-bottom:1.5rem;">
+              <span class="tag">Drum Machine</span>
+              <span class="tag">Tone.js</span>
+              <span class="tag">Cyberpunk UI</span>
+              <span class="tag">PWA</span>
+            </div>
+            <p class="app-desc" style="margin-bottom:0.5rem; font-style:italic; color: var(--accent); font-size:0.8rem;">
+              ↳ All apps built with AI collaboration — vibe coding at its best.
+            </p>
+            <span class="app-link-arrow" style="position:static; display:inline-block; margin-top:1rem;">↗ Open app</span>
+          </div>
+        </a>
+      </div>
+
+      <p style="margin-top:1.5rem; font-family: var(--font-mono); font-size:0.72rem; color: var(--text-dim); letter-spacing: 0.05em;">
+        More at <a href="https://petvajda.framer.website/apps" target="_blank" rel="noopener" style="color: var(--accent); text-decoration:none;">petvajda.framer.website/apps</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="container">
+      <p class="section-label reveal">Work</p>
+      <h2 class="section-heading reveal">Senior roles across<br>platforms &amp; products.</h2>
+
+      <div class="exp-list">
+        <div class="exp-item reveal">
+          <div>
+            <p class="exp-period">2022 – present</p>
+          </div>
+          <div>
+            <p class="exp-role">Product Manager — Messaging Developer Platform</p>
+            <p class="exp-company">Tesco Technology</p>
+            <p class="exp-detail">Led transactional Email, SMS, push and business messaging. Transitioned from service to platform mode, growing adoption 40% and reducing journey lead time from weeks to &lt;1 hour.</p>
+          </div>
+        </div>
+        <div class="exp-item reveal">
+          <div>
+            <p class="exp-period">2021 – 2022</p>
+          </div>
+          <div>
+            <p class="exp-role">Senior Product Owner</p>
+            <p class="exp-company">Matillion</p>
+            <p class="exp-detail">Roadmap and strategy for a SaaS ETL solution for cloud data warehouses. Startup velocity, product-market fit discovery.</p>
+          </div>
+        </div>
+        <div class="exp-item reveal">
+          <div>
+            <p class="exp-period">2020 – 2021</p>
+          </div>
+          <div>
+            <p class="exp-role">Product Manager — Low-code API Platform</p>
+            <p class="exp-company">Dextcloud</p>
+            <p class="exp-detail">Product strategy and roadmap for a B2B event-driven SaaS integration platform. Prototyping, A/B testing, and writing technical documentation.</p>
+          </div>
+        </div>
+        <div class="exp-item reveal">
+          <div>
+            <p class="exp-period">2018 – 2020</p>
+          </div>
+          <div>
+            <p class="exp-role">Senior Product Owner — Public APIs</p>
+            <p class="exp-company">Oracle Data Cloud (ex Grapeshot)</p>
+            <p class="exp-detail">Contextual analysis for brand safety. Integrated ODC product post-acquisition and began revenue growth within 6 months.</p>
+          </div>
+        </div>
+        <div class="exp-item reveal">
+          <div>
+            <p class="exp-period">2016 – 2018</p>
+          </div>
+          <div>
+            <p class="exp-role">Senior Product Manager</p>
+            <p class="exp-company">Meltwater</p>
+            <p class="exp-detail">Data acquisition products with AI. Built an autonomous, motivated team innovating on legacy infrastructure and reducing churn.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 2.5rem;" class="reveal">
+        <a href="mailto:petvajda@gmail.com" class="btn btn-ghost">Request full CV →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <p class="section-label reveal" style="justify-content:center;">Let's talk</p>
+      <h2 class="contact-big reveal">
+        Building something<br>
+        <em>interesting?</em>
+      </h2>
+      <p class="reveal" style="color: var(--text-dim); max-width: 460px; margin: 0 auto; font-size: 0.95rem; line-height: 1.8;">
+        I'm open to senior PM roles at UK tech companies — remote or hybrid.
+        Developer platforms, AI products, B2B SaaS. Ely, Cambridgeshire.
+      </p>
+      <div class="contact-links reveal">
+        <a href="mailto:petvajda@gmail.com" class="btn btn-primary">petvajda@gmail.com</a>
+        <a href="https://petvajda.framer.website" target="_blank" rel="noopener" class="btn btn-ghost">Music site ↗</a>
+        <a href="https://github.com/petvajda" target="_blank" rel="noopener" class="btn btn-ghost">GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2025 Péter Vajda</span>
+    <span>Ely, Cambridgeshire · UK</span>
+    <span>PM · Builder · Bassist</span>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Stagger siblings inside same parent
+    document.querySelectorAll('.exp-item, .pillar, .app-card').forEach((el, i) => {
+      el.style.transitionDelay = (i % 3) * 0.08 + 's';
+    });
+  </script>
+</body>
+</html>
