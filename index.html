@@ -273,12 +273,14 @@
 
     .app-card {
       background: var(--bg);
-      padding: 2.5rem;
+      padding: 0;
       text-decoration: none;
       color: var(--text);
-      display: block;
+      display: flex;
+      flex-direction: column;
       position: relative;
       transition: background 0.3s;
+      overflow: hidden;
     }
 
     .app-card::after {
@@ -289,6 +291,23 @@
       height: 0;
       background: var(--accent);
       transition: height 0.35s ease;
+      z-index: 1;
+    }
+
+    .app-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #1a1a1d 0%, #2d2d32 100%);
+      border-bottom: 1px solid var(--border);
+      display: block;
+    }
+
+    .app-content {
+      padding: 2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .app-card:hover { background: var(--surface); }
@@ -319,7 +338,7 @@
       margin-bottom: 1.5rem;
     }
 
-    .app-stack { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 1.5rem; }
+    .app-stack { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: auto; }
 
     .app-arrow {
       font-family: var(--font-mono);
@@ -333,10 +352,20 @@
 
     .app-card.wide {
       grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: start;
+      flex-direction: row;
+    }
+
+    .app-card.wide .app-image {
+      width: 50%;
+      height: auto;
+      min-height: 300px;
+      border-bottom: none;
+      border-right: 1px solid var(--border);
+    }
+
+    .app-card.wide .app-content {
+      width: 50%;
+      padding: 2.5rem;
     }
 
     #experience { border-top: 1px solid var(--border); }
@@ -500,6 +529,17 @@
       .pillar:last-child { border-bottom: none; }
       .apps-grid { grid-template-columns: 1fr; }
       .app-card.wide { grid-template-columns: 1fr; }
+      .app-card.wide { flex-direction: column; }
+      .app-card.wide .app-image {
+        width: 100%;
+        min-height: 200px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .app-card.wide .app-content {
+        width: 100%;
+        padding: 2rem;
+      }
       .exp-item { grid-template-columns: 1fr; gap: 0.4rem; }
       footer { flex-direction: column; gap: 0.5rem; text-align: center; }
     }
@@ -599,41 +639,46 @@
       <div class="apps-grid reveal">
 
         <a class="app-card" href="https://petvajda.github.io/rhythm-practice/" target="_blank" rel="noopener">
-          <p class="app-number">01 &mdash; Rhythm Practice App</p>
-          <h3 class="app-name">Rhythm Practice</h3>
-          <p class="app-desc">
-            Improve your grooves and solos with rhythmic ideas.
-            Generates exercises including quarter note triplets and
-            odd groupings with real-time ABC notation rendering.
-            Why not get better at reading at the same time?
-          </p>
-          <div class="app-stack">
-            <span class="tag">Tone.js</span>
-            <span class="tag">ABCJS</span>
-            <span class="tag">Web Audio</span>
-            <span class="tag">PWA</span>
+          <img src="https://petvajda.github.io/img/rhythm_practice_web.jpg" alt="Rhythm Practice app screenshot" class="app-image">
+          <div class="app-content">
+            <p class="app-number">01 — Rhythm Practice App</p>
+            <h3 class="app-name">Rhythm Practice</h3>
+            <p class="app-desc">
+              Improve your grooves and solos with rhythmic ideas.
+              Generates exercises including quarter note triplets and
+              odd groupings with real-time ABC notation rendering.
+              Why not get better at reading at the same time?
+            </p>
+            <div class="app-stack">
+              <span class="tag">Tone.js</span>
+              <span class="tag">ABCJS</span>
+              <span class="tag">Web Audio</span>
+              <span class="tag">PWA</span>
+            </div>
           </div>
-          <span class="app-arrow">&#8599;</span>
         </a>
 
         <a class="app-card" href="https://petvajda.github.io/rhythm-practice/arpeggio/" target="_blank" rel="noopener">
-          <p class="app-number">02 &mdash; Music Education</p>
-          <h3 class="app-name">Arpeggio Generator</h3>
-          <p class="app-desc">
-            What better way to learn all keys and your fingerboard?
-            Generates arpeggio exercises across every key and scale,
-            rendered with interactive notation for bass and guitar players.
-          </p>
-          <div class="app-stack">
-            <span class="tag">ABCJS</span>
-            <span class="tag">JavaScript</span>
-            <span class="tag">Music Theory</span>
+          <img src="https://petvajda.github.io/img/arpeggio_generator_web.jpg" alt="Arpeggio Generator screenshot" class="app-image">
+          <div class="app-content">
+            <p class="app-number">02 — Music Education</p>
+            <h3 class="app-name">Arpeggio Generator</h3>
+            <p class="app-desc">
+              What better way to learn all keys and your fingerboard?
+              Generates arpeggio exercises across every key and scale,
+              rendered with interactive notation for bass and guitar players.
+            </p>
+            <div class="app-stack">
+              <span class="tag">ABCJS</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">Music Theory</span>
+            </div>
           </div>
-          <span class="app-arrow">&#8599;</span>
         </a>
 
         <a class="app-card wide" href="https://petvajda.github.io/rhythm-practice/drum-machine/" target="_blank" rel="noopener">
-          <div>
+          <img src="https://petvajda.github.io/img/grid_beats_web.jpg" alt="Grid Beats drum machine screenshot" class="app-image">
+          <div class="app-content">
             <p class="app-number">03 — Featured Project</p>
             <h3 class="app-name">Grid Beats</h3>
             <p class="app-desc">
@@ -641,47 +686,49 @@
               Simple to pick up, deep enough to get lost in.
               Built to explore the intersection of music, UI design, and web audio APIs.
             </p>
-          </div>
-          <div>
             <div class="app-stack">
               <span class="tag">Drum Machine</span>
               <span class="tag">Tone.js</span>
               <span class="tag">Cyberpunk UI</span>
               <span class="tag">PWA</span>
             </div>
-            <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);letter-spacing:0.05em;margin-bottom:1rem;">
+            <p style="font-family:var(--font-mono);font-size:0.72rem;color:var(--accent);letter-spacing:0.05em;margin-top:1.5rem;">
               All apps built with AI collaboration — vibe coding at its best.
             </p>
-            <span class="app-arrow">↗ Open app</span>
           </div>
         </a>
 
         <!-- Live Band Setlist Manager -->
         <a class="app-card" href="https://petvajda.github.io/rhythm-practice/DFR/" target="_blank" rel="noopener">
-          <p class="app-number">04 — Live Performance Tool</p>
-          <h3 class="app-name">Live Band Setlist Manager</h3>
-          <p class="app-desc">
-            Firebase-backed live band setlist management prototype. 
-            When song order changes on the fly, all band members see updates in real-time. 
-            Built for my band Dance Floor Revival.
-          </p>
-          <div class="app-stack">
-            <span class="tag">Firebase</span>
-            <span class="tag">Real-time Sync</span>
-            <span class="tag">Live Performance</span>
-            <span class="tag">PWA</span>
+          <img src="https://petvajda.github.io/img/setlist_manager_web.jpg" alt="Live Band Setlist Manager screenshot" class="app-image">
+          <div class="app-content">
+            <p class="app-number">04 — Live Performance Tool</p>
+            <h3 class="app-name">Live Band Setlist Manager</h3>
+            <p class="app-desc">
+              Firebase-backed live band setlist management prototype. 
+              When song order changes on the fly, all band members see updates in real-time. 
+              Built for my band Dance Floor Revival.
+            </p>
+            <div class="app-stack">
+              <span class="tag">Firebase</span>
+              <span class="tag">Real-time Sync</span>
+              <span class="tag">Live Performance</span>
+              <span class="tag">PWA</span>
+            </div>
           </div>
-          <span class="app-arrow">↗</span>
         </a>
 
         <!-- Placeholder for grid balance -->
         <div class="app-card" style="opacity:0.3; pointer-events:none; border: 1px dashed var(--border); background: transparent;">
-          <p class="app-number">More coming soon...</p>
-          <h3 class="app-name" style="color:var(--muted);">Next Project</h3>
-          <p class="app-desc">
-            Always building. Check back for new experiments in music tech, 
-            AI tooling, and platform thinking.
-          </p>
+          <div class="app-image" style="background: transparent; border-bottom: 1px dashed var(--border);"></div>
+          <div class="app-content">
+            <p class="app-number">More coming soon...</p>
+            <h3 class="app-name" style="color:var(--muted);">Next Project</h3>
+            <p class="app-desc">
+              Always building. Check back for new experiments in music tech, 
+              AI tooling, and platform thinking.
+            </p>
+          </div>
         </div>
 
       </div>
